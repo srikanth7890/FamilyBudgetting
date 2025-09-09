@@ -9,12 +9,18 @@ const Settings: React.FC = () => {
   const [success, setSuccess] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     currency: user?.currency || 'USD',
+    first_name: user?.first_name || '',
+    last_name: user?.last_name || '',
+    email: user?.email || '',
   });
 
   useEffect(() => {
     if (user) {
       setFormData({
         currency: user.currency || 'USD',
+        first_name: user.first_name || '',
+        last_name: user.last_name || '',
+        email: user.email || '',
       });
     }
   }, [user]);
@@ -29,10 +35,13 @@ const Settings: React.FC = () => {
       setError(null);
       setSuccess(null);
 
-      // Update user currency
+      // Update user profile
       await updateUser({
         ...user,
         currency: formData.currency,
+        first_name: formData.first_name,
+        last_name: formData.last_name,
+        email: formData.email,
       });
 
       setSuccess('Settings updated successfully!');
@@ -47,7 +56,7 @@ const Settings: React.FC = () => {
     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -79,10 +88,10 @@ const Settings: React.FC = () => {
       <div className="card">
         <div className="card-header">
           <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-            Currency Settings
+            Profile Settings
           </h3>
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            Choose your preferred currency for displaying amounts throughout the application.
+            Update your personal information and preferences.
           </p>
         </div>
         <div className="card-body">
@@ -99,6 +108,54 @@ const Settings: React.FC = () => {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Personal Information */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label htmlFor="first_name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  First Name
+                </label>
+                <input
+                  type="text"
+                  id="first_name"
+                  name="first_name"
+                  value={formData.first_name}
+                  onChange={handleInputChange}
+                  className="input-field"
+                  required
+                />
+              </div>
+              <div>
+                <label htmlFor="last_name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Last Name
+                </label>
+                <input
+                  type="text"
+                  id="last_name"
+                  name="last_name"
+                  value={formData.last_name}
+                  onChange={handleInputChange}
+                  className="input-field"
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Email Address
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                className="input-field"
+                required
+              />
+            </div>
+
+            {/* Currency Settings */}
             <div>
               <label htmlFor="currency" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Default Currency
@@ -141,25 +198,12 @@ const Settings: React.FC = () => {
           <h3 className="text-lg font-medium text-gray-900 dark:text-white">
             Account Information
           </h3>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Read-only account details that cannot be changed.
+          </p>
         </div>
         <div className="card-body">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Name
-              </label>
-              <p className="text-gray-900 dark:text-white">
-                {user.first_name} {user.last_name}
-              </p>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Email
-              </label>
-              <p className="text-gray-900 dark:text-white">
-                {user.email}
-              </p>
-            </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Username
